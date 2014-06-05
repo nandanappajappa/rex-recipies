@@ -12,22 +12,3 @@ task "uptime", group => "myserver", sub {
    my $output = run "uptime";
    say $output;
 };
-
-desc "Manage ntpd of all server";
-task "setup_ntp", group => "all_servers", sub {
-
-   # first we will install the package
-   install "ntp";
-
-   # then we will upload a configuration file.
-   # the configuration file is located in a subdirectory files/etc.
-   file "/etc/ntp.conf",
-      source    => "files/etc/ntp.conf",
-      on_change => sub {
-         # we define a on_change hook, so that the ntpd server gets restarted if the file is modified.
-         service ntpd => "restart";
-      };
-
-   # now we register the service to start at boot time.
-   service ntpd => ensure => "started";
-};
